@@ -1,0 +1,166 @@
+{% load static%}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'star.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'give_star.css'%}">
+	<style type="text/css">
+		
+		.myReview:hover{
+
+			box-shadow: 10px 7px #b8b8b8;
+		}
+		.favIcon{
+			color:#888888;
+			float:right;
+			font-size: 40px;
+		}
+		.favIcon:hover{
+			color:red;
+			float:right;
+		}
+		.savedfavIcon{
+			float:right;
+			font-size: 40px;
+			color:red;
+		}
+	</style>
+	<title>BestReads</title>
+</head>
+<body>
+	<div class="container">
+	{% include 'header.html' with pageNo='index'%}
+	<hr style="margin-top:150px">
+
+	<nav aria-label="breadcrumb">
+	  <ol class="breadcrumb">
+	    <li class="breadcrumb-item"><a href="{% url 'index'%}">Home</a></li>
+	    <li class="breadcrumb-item"><a href="{% url 'category' selCategory=product.productCategory %}">{{product.productCategory}}</a></li>
+	    <li class="breadcrumb-item active" aria-current="page">{{product.productName}}</li>
+	  </ol>
+	</nav>
+
+	<div class="row justify-content-center">
+		<div class="card mb-3"  style="box-shadow: 20px 10px #b8b8b8">
+	  		<div class="row no-gutters">
+	    		<div class="col-md-4">
+	      			<img src="{{product.productImage.url}}" class="card-img" alt="...">
+	    		</div>
+	    		<div class="col-md-8">
+	      			<div class="card-body">
+	      				{%if userName%}
+	      					{% if product in myProducts%}
+	      						<a href="{% url 'removefav' product_id=product.id%}"><i class="fa fa-heart savedfavIcon"></i></a>
+  							{%else%}
+  								<a href="{% url 'savefav' product_id=product.id%}"><i class="fa fa-heart favIcon"></i></a>
+      						{%endif%}
+	      				{%else%}
+	      				<a href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-heart favIcon" ></i></a>
+	      				{%endif%}
+		        		<mark><h3 class="card-title text-dark" style="font-size: 3em">{{product.productName}}&nbsp;</h3></mark>
+		        		<span><b>Company : </b>{{product.productCompany}}</span><br>
+		        		<p class="card-text" style="margin-top: 30px"><b>Description:</b><br>{{product.productDescription}}</p>
+
+		        		<span class="badge badge-dark" style="margin-top: 30px">
+				        	<div class="star-ratings-css">
+				              <div class="star-ratings-css-top" style="width:{{product.avgReview}}%;"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+				              <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+				        	</div>&nbsp;&nbsp;
+				        </span>
+				        <div style="margin-top: 70px" >
+				        {% if product.productQuantity is not 0 %}
+				        	<a href="{% url 'addToCart' product_id=product.id%}" ><button class="btn btn-primary btn-lg">Add To Cart</button></a>
+				    	{%else%}
+				    		<h6>Out Of Stock</h6>
+				    	{% endif %}
+				    	</div>
+		      		</div>
+	    		</div>
+	  		</div>
+		</div>
+	</div>
+
+
+	
+	<span class="badge badge-success"><h4>Reviews</h4></span>
+	{% if not reviews%}
+		<br><br>
+		<h6>No reviews available</h6>
+	{%endif%}
+	{%for review in reviews%}
+	<div class="myReview" style="border: 1px solid #888888;margin-top: 20px; border-radius: 9px">
+		<div class="row" >
+			<div class="col-10">
+				<div class="card" style="width: 18rem;">
+				  <div class="card-body">
+				    <h5 class="card-title">{{review.reviewTitle}}</h5>
+				    <h6 class="card-subtitle mb-2 text-muted">{{review.reviewDesc}}</h6> 
+				    <p>By : {{review.reviewUser.userName}}<br>
+				    On : {{review.reviewAddedDate}}</p>
+				  </div>
+				</div>
+			</div>
+			<div class="star-ratings-css" style="margin-bottom: 8px">
+	              <div class="star-ratings-css-top" style="width:{{review.reviewRating}}%;"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+	              <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+			</div>&nbsp;&nbsp;
+
+			
+		</div>
+	</div>
+	{%endfor%}
+	<span class="badge badge-success" style="margin-top: 30px"><h6> Give Review</h6></span>
+	<div class="row justify-content-center">
+		<div class=col-8 style="box-shadow: 10px 5px #b8b8b8;background-color: #f6f6f6;border-radius: 8px;min-width: 20rem;" >
+			
+
+			  <form action="{% url 'give_review' product_id=product.id%}">
+			  
+		    	<div class="stars">
+				    <input class="star star-5" id="star-5" type="radio" value="5" name="star"/>
+
+				    <label class="star star-5" for="star-5"></label>
+
+				    <input class="star star-4" id="star-4" value="4" type="radio" name="star"/>
+
+				    <label class="star star-4" for="star-4"></label>
+
+				    <input class="star star-3" id="star-3" value="3" type="radio" name="star"/>
+
+				    <label class="star star-3" for="star-3"></label>
+
+				    <input class="star star-2" id="star-2"  value="2" type="radio" name="star"/>
+
+				    <label class="star star-2" for="star-2"></label>
+
+				    <input class="star star-1" id="star-1" type="radio" name="star" value="1" />
+
+				    <label class="star star-1" for="star-1"></label>
+				</div>
+
+				<input class="form-control" type="text" name="title" placeholder="Title for review" required><br>
+
+			  	<textarea type="text" class="form-control" name="description" placeholder="Description" required></textarea><br>
+			  	{% if userName%}
+			    <input class="btn btn-success" type="submit" value="Submit" style="margin-bottom: 10px;">
+			    {% else %}
+			     <span class="btn btn-success" data-toggle="modal" data-target="#exampleModalCenter" style="margin-bottom: 10px;">Submit</span>
+		     	{% endif%}
+			 </form>
+			
+		</div>
+	</div>
+
+
+	{% include 'footer.html'%}
+	</div>
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+
+{% load static %}
+    <style type="text/css">
+      
+      .navwidth{
+        font-size: 23px;
+        margin-left: 25px;
+      }    
+      li.dropdown:hover > .dropdown-menu {
+        display: block;
+      }
+      .loginput{
+        width: 200px;
+        border-radius: 10px;
+        border: 2px inset #636667;
+        padding-left: 10px;                              
+      }
+      .loginput:hover{
+        border :2px inset #57BADC;
+      }
+      #reglink{
+        font-size: 17px;
+        color: blue;
+        margin-top: 20px;
+      }
+      .message{
+
+        text-align:center;
+        color:green;
+        margin-top: 150px;
+      }
+    </style>
+    <script>  
+        function check_pass() {
+            if (document.getElementById('psw1').value ==
+                    document.getElementById('psw2').value) {
+                document.getElementById('submit').disabled = false;
+            } else {
+                document.getElementById('submit').disabled = true;
+            }
+        }
+    </script>  
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <a class="navbar-brand" href="#"><h1 style="font-family: cursive;">NoobsKart</h1></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item">
+        <a class="nav-link navwidth  {% if pageNo == 'index' %} active {% endif %}" href="{% url 'index'%}">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link navwidth" href="#">Link</a>
+      </li>
+
+      <li class="nav-item dropdown navwidth">
+          <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Categories<b class="caret"></b></a>
+          <ul class="dropdown-menu">
+
+            {% for category in categories%}
+        
+              <li><a href="{% url 'category' selCategory=category.categoryName %}" class="
+                dropdown-item">{{category.categoryName}}</a></li>
+            {% endfor %}
+          </ul>
+        </li>
+    </ul>
+
+    <form class="form-inline my-2 my-lg-0" action="{%url 'search'%}">
+     
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" name="search" value="{{searchString}}">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+     <ul class="navbar-nav mr-2 mt-2 mt-lg-0">
+      {% if userName%}
+       <li class="nav-item dropdown navwidth">
+          <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-user" aria-hidden="true"></i>&nbsp;{{userName}}<b class="caret"></b></a>
+          <ul class="dropdown-menu">          
+              <li><a href="{% url 'myProducts'%}" class="dropdown-item">Wishlist</a></li>
+              <li><a href="{% url 'logout'%}" class="dropdown-item">Logout</a></li>
+              <li><a href="{% url 'myCart'%}" class="dropdown-item">My Cart</a></li>
+              <li><a href="{% url 'buyedProducts'%}" class="dropdown-item">My Products</a></li>
+          </ul>
+        </li>
+      {%else%}
+      <li class="nav-item">
+        <a class="nav-link navwidth" href="#" data-toggle="modal" data-target="#exampleModalCenter">Login</a>
+      </li>
+      {%endif%}
+    </ul>
+  </div>
+</nav>
+
+
+<!-- Modal -->
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Login Form</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'loginUser'%}" name="loginForm" method="post" align="center">
+            {% csrf_token%}
+            <input class="loginput" type="email" name="uemail" required placeholder="Email"><br><br>
+            <input class="loginput" type="password" name="upass"  placeholder="Password"required><br><br>
+            <input class="btn btn-primary" type="submit" value="Login">
+        </form>
+        <a href="#" data-toggle="modal"  data-dismiss="modal" data-target="#exampleModalCenter1"><h6 id="reglink" align="center" >SignUp for BestKart</h6></a>
+      </div>
+      <div class="modal-footer">
+       
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Registration Form</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'register'%}" name="registerUser" method="post" align="center">
+            {% csrf_token%}
+            <input class="loginput" type="text" name="uname" required placeholder="User Name" required><br><br>
+            <input class="loginput" type="email" name="uemail" required placeholder="Email" required><br><br>
+            <input class="loginput" type="number" name="ucontact" required placeholder="Contact" required><br><br>
+            <input class="loginput" id="psw1" onchange='check_pass();' type="password" name="upass"  placeholder="Password"required><br><br>
+            <input class="loginput" id="psw2" onchange='check_pass();' type="password" name="repass"  placeholder="Retype Password"required><br><br>
+            <input class="btn btn-primary" id= "submit" type="submit" value="Register" disabled/>
+        </form>
+      </div>
+      <div class="modal-footer">
+       
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if message != None%}
+   <h6 class="message">{{message}}</h6>
+{%endif%}
+

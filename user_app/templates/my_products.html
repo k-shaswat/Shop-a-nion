@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>BestReads</title>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'star.css'%}">
+     <style type="text/css">
+ 
+      .myCard:hover{
+          box-shadow: 10px 10px #888888;
+
+      }
+
+      .myCardCol a{
+        text-decoration: none;
+        color:black;
+      }
+      .myCardCola a:hover{
+        text-decoration: none;
+        color:black; 
+      }
+
+
+
+    </style>
+
+</head>
+<body>
+
+	<div class="container">
+		{% include 'header.html' with pageNo='index'%}
+		 <h4 style="margin-top:150px;margin-bottom:10px;"><span class="badge badge-dark">My Wishlist:</span></h4>
+	{% if products%}
+	<div class="row justify-content-center">
+
+      {% for product in products%}
+        <div class="col-lg-3  col-sm-4 col-6 mt-3 mb-3">
+        <div class="myCardCol">
+        <a href="{% url 'product' product_id=product.id %}">
+        <div class="card myCard">
+          <img class="card-img-top" src="{{product.productImage.url}}" alt="Card image">
+          <div class="card-body">
+            <span class="badge badge-warning">{{product.productDiscount}}% OFF</span><br>
+            <span class="card-title myCardTitle"><b>{{product.productName}}</span></b>
+            <br>
+            <span style="text-decoration: line-through;"><b>&#8377;{{product.productPrice}}</b></span><span style="float: right">&#8377;{{product.productDiscountedPrice}}</span>
+          </div>
+        </div>
+    	</a>
+         <span class="badge badge-dark">
+         <div class="star-ratings-css">
+              <div class="star-ratings-css-top" style="width:{{product.avgReview}}%;"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+              <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+          </div>&nbsp;&nbsp;
+          </span>
+        </div> 
+      </div>
+  	</a>
+      {% endfor %}
+    </div>
+    {%else%}
+    <h5>No Products Found</h5>
+    {%endif%}
+
+
+
+		{% include 'footer.html'%}
+	</div>
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+</body>
+</html>
